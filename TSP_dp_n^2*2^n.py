@@ -100,7 +100,6 @@ class TSP(object):
         return cost
 
 
-
 if __name__ == "__main__":
     print "script_name", sys.argv[0]
     for i in range(1, len(sys.argv)):
