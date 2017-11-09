@@ -27,10 +27,16 @@ class Generator(object):
                     print "  ",
                     continue
                 elif k == 0:
-                    print " " + str(j - 1),
+                    if j > 10:
+                        print str(j - 1),
+                    else:
+                        print " " + str(j - 1),
                     continue
                 elif j == 0:
-                    print " " + str(k - 1),
+                    if k > 10:
+                        print str(k - 1),
+                    else:
+                        print " " + str(k - 1),
                     continue
                 if self.map_matrix[k-1][j-1] < 10:
                     print " "+str(self.map_matrix[k-1][j-1]),
@@ -47,7 +53,7 @@ class Generator(object):
         # init a set of all point could be block
         for k in range(self.size):
             for j in range(self.size):
-                matrix[k][j] = random.choice(range(self.max_length))
+                matrix[k][j] = random.choice(range(1,self.max_length))
         for k in range(self.size):
             for j in range(self.size):
                 matrix[k][j] = matrix[j][k]
@@ -59,6 +65,18 @@ class Generator(object):
     def get_matrix(self):
         return self.map_matrix
 
+    def extend_matrix(self):
+        self.size += 1
+        matrix = [[0 for j in range(self.size)] for k in range(self.size)]
+        for k in range(self.size - 1):
+            for j in range(self.size - 1):
+                matrix[k][j] = self.map_matrix[k][j]
+        for k in range(self.size - 1):
+            matrix[k][self.size - 1] = random.choice(range(self.max_length))
+            matrix[self.size - 1][k] = random.choice(range(self.max_length))
+        self.map_matrix = matrix
+        return matrix
+
 
 if __name__ == "__main__":
     print "script_name", sys.argv[0]
@@ -69,5 +87,7 @@ if __name__ == "__main__":
     generator = Generator(10, 100)
     generator.print_matrix()
     generator.paint_random()
+    generator.print_matrix()
+    generator.extend_matrix()
     generator.print_matrix()
     print ('start over')

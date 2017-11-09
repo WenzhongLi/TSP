@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <title>HomeWork | V=512,E=512*9</title>
+
+    <style type="text/css">
+        #mynetwork {
+            width: 900px;
+            height: 900px;
+            border: 1px solid lightgray;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <script type="text/javascript" src="graph.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript">
+        function draw() {
+            // create some nodes
+
+
+            // create a network
+            var container = document.getElementById('mynetwork');
+            var data = {
+                nodes: nodes12,
+                edges: edges12
+            };
+            var options = {
+                nodes: {
+                    shape: 'dot',
+                    size: 16
+                },
+                physics: {
+                    forceAtlas2Based: {
+                        gravitationalConstant: -55,
+                        centralGravity: 0.002,
+                        springLength: 230,
+                        springConstant: 0.18
+                    },
+                    maxVelocity: 146,
+                    solver: 'forceAtlas2Based',
+                    timestep: 0.35,
+                    stabilization: {iterations: 150}
+                }
+            };
+            var network = new vis.Network(container, data, options);
+
+        }
+    </script>
+
+</head>
+
+<body onload="draw()">
+<p>
+    CS512 BONUS GRAPH Wenzhong Li Section 2
+    NetID:wl465
+</p>
+
+<div id="mynetwork"></div>
+</body>
+</html>

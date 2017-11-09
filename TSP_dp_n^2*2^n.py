@@ -82,11 +82,12 @@ class TSP(object):
                 min_path_for_all_start[start] = (min_length_for_current_start, min_path_for_current_start)
                 self.countcost(map,min_path_for_current_start)
                 print min_path_for_current_start
+                break
             else:
                 print "error"
 
-        print min_path_for_all_start
-        return result
+        #print min_path_for_all_start
+        return min_path_for_all_start
 
     def countcost(self, map, path):
         last = -1
@@ -99,6 +100,66 @@ class TSP(object):
                 last = node
         return cost
 
+    def printpath(self, map, path):
+        last = -1
+        cost = []
+        for node in path:
+            if last == -1:
+                last = node
+            else:
+                cost.append(map[node][last])
+                last = node
+        print path
+        print cost
+        return cost
+
+    def buildgreph(self, map, path, size):
+        path_edge_set = set()
+        last = -1
+        for node in path:
+            if last == -1:
+                last = node
+            else:
+                path_edge_set.add((last,node))
+                last = node
+        f = open("graph.js", "a")
+        d = 0
+        f.write("var nodes"+str(size)+" = [\n")
+        # {id: 1, label: 'Node 1'},
+        line = "{id: %s, label: \'Node %s\',shape: 'circle'},\n"
+        for node in range(0, size):
+            f.write(line % (str(node), str(node + 1)))
+        f.write("];\n")
+
+        f.write("var edges"+str(size)+" = [\n")
+        # {from: 2, to: 4, label: 'horizontal', font: {align: 'horizontal'}},
+        line2 = "{from: %s, to: %s, label: \'%s\', font: {align: \'horizontal\'}}\n,"
+        line3 = "{from: %s, to: %s, label: \'%s\', color:{color:\'red\'}, font: {align: \'horizontal\'}}\n,"
+        v_list = []
+        for j in range(size):
+            v_list.append(j)
+        for edge in itertools.combinations(v_list, 2):
+            if edge[0] == edge[1]:
+                continue
+            elif (edge[0],edge[1]) in path_edge_set or (edge[1],edge[0]) in path_edge_set:
+                f.write(line3 % (str(edge[0]), str(edge[1]), map[edge[0]][edge[1]]))
+            else:
+                f.write(line2 % (str(edge[0]), str(edge[1]), map[edge[0]][edge[1]]))
+
+        f.write("];\n")
+
+        # for node in range(0, 512):
+        #     s = str(node)+";"
+        #     d = 1
+        #     for j in range(1, 10):
+        #         if j != 1:
+        #             s = s + ";"
+        #         d += 82
+        #         s = s + str((node + d) % 512)
+        #     s = s + "\n"
+        #     f.write(s)
+        f.flush()
+        f.close()
 
 if __name__ == "__main__":
     print "script_name", sys.argv[0]
@@ -111,5 +172,23 @@ if __name__ == "__main__":
     generator = generator.Generator(size, max_length)
     generator.paint_random()
     generator.print_matrix()
-    r = tsp.run_tsp(generator.get_matrix(), size)
-    print r
+    # r1 = tsp.run_tsp(generator.get_matrix(), size)
+    # print r1
+    # generator.extend_matrix()
+    # size += 1
+    # generator.print_matrix()
+    # r2 = tsp.run_tsp(generator.get_matrix(), size)
+    # print r2
+    # generator.extend_matrix()
+    # size += 1
+    # generator.print_matrix()
+    # r3 = tsp.run_tsp(generator.get_matrix(), size)
+    # print r3
+    for size in range(10,26,1):
+        r = tsp.run_tsp(generator.get_matrix(), size)
+        print r
+        tsp.printpath(generator.get_matrix(), r[0][1])
+        tsp.buildgreph(generator.get_matrix(),r[0][1],size)
+        generator.extend_matrix()
+        size += 1
+        generator.print_matrix()
